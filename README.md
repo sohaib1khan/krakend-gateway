@@ -37,7 +37,7 @@ A containerized KrakenD setup with web-based configuration management for API ro
 
 ### Clone the Repository
 ```bash
-git clone https://github.com/yourusername/krakend-gateway.git
+git clone https://github.com/sohaib1khan/krakend-gateway
 cd krakend-gateway
 ```
 
