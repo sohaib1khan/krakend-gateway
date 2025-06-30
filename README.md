@@ -1,18 +1,19 @@
 # KrakenD API Gateway
+
 <div align="center">
+
 [![KrakenD Interactive Documentation](https://img.shields.io/badge/🐙_INTERACTIVE-DOCUMENTATION-4a5568?style=for-the-badge&labelColor=0c0c0c&color=2d3748&logoColor=white)](./doc/index.html)
 
 **🌐 High-Performance Gateway | 🔧 Web Management | 📊 Real-time Monitoring | ⚡ One-Command Setup**
 
 *🚀 Production ready • Configuration management • Always evolving*
+
 ---
 </div>
 
 **High-Performance API Gateway with Web Management Interface**
 
 A containerized KrakenD setup with web-based configuration management for API routing, load balancing, and endpoint management.
-
-
 
 ---
 
@@ -36,7 +37,7 @@ A containerized KrakenD setup with web-based configuration management for API ro
 
 ### Clone the Repository
 ```bash
-git clone https://github.com/yourusername/krakend-gateway.git
+git clone https://github.com/sohaib1khan/krakend-gateway
 cd krakend-gateway
 ```
 
