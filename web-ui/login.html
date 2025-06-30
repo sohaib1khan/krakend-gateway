@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KrakenD Gateway - Management Console</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .login-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            max-width: 1200px;
+            width: 90%;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            min-height: 600px;
+        }
+        
+        .login-form-section {
+            padding: 60px 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .info-section {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .logo {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .logo h1 {
+            font-size: 2.5em;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .logo p {
+            color: #7f8c8d;
+            font-size: 1.1em;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e1e8ed;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .login-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .login-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .error-message {
+            background: #ff6b6b;
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        
+        .info-header {
+            margin-bottom: 30px;
+        }
+        
+        .info-header h2 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+        
+        .feature-list {
+            list-style: none;
+            margin-bottom: 30px;
+        }
+        
+        .feature-list li {
+            margin-bottom: 15px;
+            padding-left: 30px;
+            position: relative;
+        }
+        
+        .feature-list li::before {
+            content: "🚀";
+            position: absolute;
+            left: 0;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .stat-card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #3498db;
+        }
+        
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.8;
+            margin-top: 5px;
+        }
+        
+        .tech-stack {
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+
+        
+        @media (max-width: 768px) {
+            .login-container {
+                grid-template-columns: 1fr;
+                margin: 20px;
+            }
+            
+            .info-section {
+                order: -1;
+                padding: 30px;
+            }
+            
+            .login-form-section {
+                padding: 40px 30px;
+            }
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 10px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-form-section">
+            <div class="logo">
+                <h1>🐙 KrakenD</h1>
+                <p>API Gateway Management Console</p>
+            </div>
+            
+            <div class="error-message" id="error-message"></div>
+            
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" required autocomplete="username" placeholder="Enter your username">
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" required autocomplete="current-password" placeholder="Enter your password">
+                </div>
+                
+                <button type="submit" class="login-btn" id="login-btn">
+                    🔐 Access Gateway Console
+                </button>
+            </form>
+            
+            <div style="margin-top: 30px; padding: 20px; background: #f8f9fa; border-radius: 10px; border-left: 4px solid #667eea;">
+                <h4 style="color: #2c3e50; margin-bottom: 10px;">🔒 Access Required</h4>
+                <p style="color: #7f8c8d; font-size: 0.9em;">Please authenticate to access the gateway management console.</p>
+            </div>
+        </div>
+        
+        <div class="info-section">
+            <div class="info-header">
+                <h2>Gateway Console</h2>
+                <p>API endpoint management and monitoring</p>
+            </div>
+            
+            <ul class="feature-list">
+                <li>Manage API endpoints</li>
+                <li>Monitor gateway status</li>
+                <li>Configure routing rules</li>
+                <li>Test API connections</li>
+                <li>View request logs</li>
+                <li>System health checks</li>
+            </ul>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number" id="gateway-status">●</div>
+                    <div class="stat-label">Gateway Status</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="endpoints-stat">-</div>
+                    <div class="stat-label">Configured APIs</div>
+                </div>
+            </div>
+            
+
+    <script>
+        const MANAGER_URL = 'http://xxx.xxx.x.xx:5001';
+        
+        // Update stats on load
+        async function updateStats() {
+            try {
+                // Update last updated time
+                const now = new Date();
+                document.getElementById('last-updated').textContent = now.toLocaleTimeString();
+                
+                // Check gateway status
+                try {
+                    const response = await fetch(`${MANAGER_URL}/config`);
+                    if (response.ok) {
+                        const data = await response.json();
+                        const endpointCount = data.metadata?.total_endpoints || 0;
+                        document.getElementById('endpoints-stat').textContent = endpointCount;
+                        document.getElementById('gateway-status').textContent = '●';
+                        document.getElementById('gateway-status').style.color = '#00b894';
+                    } else {
+                        document.getElementById('gateway-status').textContent = '●';
+                        document.getElementById('gateway-status').style.color = '#ff6b6b';
+                    }
+                } catch (e) {
+                    document.getElementById('endpoints-stat').textContent = '-';
+                    document.getElementById('gateway-status').textContent = '●';
+                    document.getElementById('gateway-status').style.color = '#ff6b6b';
+                }
+            } catch (error) {
+                console.log('Stats update failed:', error);
+            }
+        }
+        
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const loginBtn = document.getElementById('login-btn');
+            const errorDiv = document.getElementById('error-message');
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            // Show loading state
+            loginBtn.disabled = true;
+            loginBtn.innerHTML = '<span class="loading"></span>Authenticating...';
+            errorDiv.style.display = 'none';
+            
+            try {
+                const response = await fetch(`${MANAGER_URL}/auth/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({ username, password })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    // Success - redirect to main dashboard
+                    window.location.href = 'index.html';
+                } else {
+                    // Show error
+                    errorDiv.textContent = data.message || 'Invalid credentials. Please try again.';
+                    errorDiv.style.display = 'block';
+                }
+            } catch (error) {
+                errorDiv.textContent = 'Connection failed. Please check if the gateway service is running.';
+                errorDiv.style.display = 'block';
+            } finally {
+                // Reset button
+                loginBtn.disabled = false;
+                loginBtn.innerHTML = '🔐 Access Gateway Console';
+            }
+        });
+        
+        // Check if already logged in
+        async function checkExistingAuth() {
+            try {
+                const response = await fetch(`${MANAGER_URL}/auth/status`, { 
+                    credentials: 'include' 
+                });
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.logged_in) {
+                        window.location.href = 'index.html';
+                    }
+                }
+            } catch (error) {
+                // Ignore - user not logged in
+            }
+        }
+        
+        // Initialize page
+        window.onload = () => {
+            checkExistingAuth();
+            updateStats();
+            
+            // Update stats every 30 seconds
+            setInterval(updateStats, 30000);
+        };
+        
+        // Focus username field
+        document.getElementById('username').focus();
+    </script>
+</body>
+</html>

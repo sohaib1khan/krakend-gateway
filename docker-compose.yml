@@ -1,0 +1,35 @@
+services:
+  krakend:
+    image: krakend:latest
+    container_name: krakend-gateway
+    restart: unless-stopped
+    ports:
+      - "8684:8684"
+    volumes:
+      - ./config:/etc/krakend:ro
+      - ./logs:/var/log/krakend
+    command: ["run", "--config", "/etc/krakend/krakend.json"]
+
+  krakend-manager:
+    build: ./management
+    container_name: krakend-manager
+    restart: unless-stopped
+    ports:
+      - "5001:5001"
+    volumes:
+      - ./config:/app/config
+      - ./management/backups:/app/backups
+      - /var/run/docker.sock:/var/run/docker.sock
+    depends_on:
+      - krakend
+
+  krakend-ui:
+    image: nginx:alpine
+    container_name: krakend-ui
+    restart: unless-stopped
+    ports:
+      - "3000:80"
+    volumes:
+      - ./web-ui:/usr/share/nginx/html:ro
+    depends_on:
+      - krakend-manager

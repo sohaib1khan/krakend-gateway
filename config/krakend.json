@@ -1,0 +1,191 @@
+{
+  "$schema": "https://www.krakend.io/schema/v2.10/krakend.json",
+  "version": 3,
+  "name": "DevOps Learning API Gateway",
+  "timeout": "3000ms",
+  "cache_ttl": "300s",
+  "output_encoding": "json",
+  "port": 8684,
+  "host": ["http://xxx.xxx.x.xx:8684"],
+  "extra_config": {
+    "server/cors": {
+      "allow_origins": ["*"],
+      "allow_methods": ["GET", "POST", "PUT", "DELETE"],
+      "allow_headers": ["*"]
+    },
+    "server/logger": {
+      "level": "INFO",
+      "prefix": "[KRAKEND]",
+      "syslog": false,
+      "stdout": true
+    }
+  },
+  "endpoints": [
+    {
+      "endpoint": "/health",
+      "method": "GET",
+      "output_encoding": "json",
+      "backend": [
+        {
+          "url_pattern": "/health",
+          "encoding": "json",
+          "method": "GET",
+          "host": ["http://xxx.xxx.x.xx:8684"],
+          "disable_host_sanitize": false
+        }
+      ],
+      "extra_config": {
+        "proxy": {
+          "static": {
+            "data": {
+              "status": "healthy",
+              "service": "krakend-gateway",
+              "version": "v2.10.1",
+              "port": "8684"
+            },
+            "strategy": "always"
+          }
+        }
+      }
+    },
+    {
+      "endpoint": "/api/team",
+      "method": "GET",
+      "output_encoding": "json",
+      "backend": [
+        {
+          "url_pattern": "/api/team",
+          "encoding": "json",
+          "method": "GET",
+          "host": ["http://xxx.xxx.x.xx:5000"],
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/api/team",
+      "method": "POST",
+      "output_encoding": "json",
+      "input_headers": ["Content-Type"],
+      "backend": [
+        {
+          "url_pattern": "/api/team",
+          "encoding": "json",
+          "method": "POST",
+          "host": ["http://xxx.xxx.x.xx:5000"],
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/api/team/{id}",
+      "method": "GET",
+      "output_encoding": "json",
+      "backend": [
+        {
+          "url_pattern": "/api/team/{id}",
+          "encoding": "json",
+          "method": "GET",
+          "host": ["http://xxx.xxx.x.xx:5000"],
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/api/team/{id}",
+      "method": "DELETE",
+      "output_encoding": "json",
+      "backend": [
+        {
+          "url_pattern": "/api/team/{id}",
+          "encoding": "json", 
+          "method": "DELETE",
+          "host": ["http://xxx.xxx.x.xx:5000"],
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/api/projects",
+      "method": "GET",
+      "output_encoding": "json",
+      "backend": [
+        {
+          "url_pattern": "/api/projects",
+          "encoding": "json",
+          "method": "GET",
+          "host": ["http://xxx.xxx.x.xx:5000"],
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/api/projects",
+      "method": "POST",
+      "output_encoding": "json",
+      "input_headers": ["Content-Type"],
+      "backend": [
+        {
+          "url_pattern": "/api/projects",
+          "encoding": "json",
+          "method": "POST",
+          "host": ["http://xxx.xxx.x.xx:5000"],
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/api/stats",
+      "method": "GET",
+      "output_encoding": "json",
+      "backend": [
+        {
+          "url_pattern": "/api/stats",
+          "encoding": "json",
+          "method": "GET",
+          "host": ["http://xxx.xxx.x.xx:5000"],
+          "disable_host_sanitize": false
+        }
+      ]
+    },
+    {
+      "endpoint": "/api/dashboard",
+      "method": "GET",
+      "output_encoding": "json",
+      "backend": [
+        {
+          "url_pattern": "/api/team",
+          "encoding": "json",
+          "method": "GET",
+          "host": ["http://xxx.xxx.x.xx:5000"],
+          "mapping": {
+            "collection": "team_data"
+          }
+        },
+        {
+          "url_pattern": "/api/projects", 
+          "encoding": "json",
+          "method": "GET",
+          "host": ["http://xxx.xxx.x.xx:5000"],
+          "mapping": {
+            "collection": "projects_data"
+          }
+        },
+        {
+          "url_pattern": "/api/stats",
+          "encoding": "json",
+          "method": "GET", 
+          "host": ["http://xxx.xxx.x.xx:5000"],
+          "mapping": {
+            "collection": "stats_data"
+          }
+        }
+      ],
+      "extra_config": {
+        "proxy": {
+          "sequential": false
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KrakenD Gateway Documentation</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #1a1a1a;
+            color: #e1e1e1;
+            line-height: 1.6;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+            padding: 60px 20px;
+            text-align: center;
+            border-bottom: 1px solid #4a5568;
+        }
+        
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            color: #f7fafc;
+            font-weight: 600;
+        }
+        
+        .header .subtitle {
+            font-size: 1.2rem;
+            color: #a0aec0;
+            margin-bottom: 20px;
+        }
+        
+        .header .tagline {
+            font-size: 1rem;
+            color: #718096;
+            margin-bottom: 30px;
+        }
+        
+        .status-badges {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .badge {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        .badge.running { background: #2d5a3d; color: #68d391; }
+        .badge.management { background: #3d4852; color: #90cdf4; }
+        .badge.monitoring { background: #4a3d52; color: #d6bcfa; }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            max-width: 800px;
+            margin: 40px auto 0;
+            padding: 0 20px;
+        }
+        
+        .stat-card {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            color: #a0aec0;
+            font-size: 0.9rem;
+        }
+        
+        .container { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
+        
+        .nav-tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 40px;
+            background: #2d3748;
+            border-radius: 8px;
+            padding: 8px;
+            gap: 4px;
+        }
+        
+        .nav-tab {
+            padding: 12px 20px;
+            background: transparent;
+            border: none;
+            color: #a0aec0;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+        
+        .nav-tab:hover { background: rgba(255, 255, 255, 0.1); color: #f7fafc; }
+        .nav-tab.active { background: #4a5568; color: #f7fafc; }
+        
+        .section { display: none; }
+        .section.active { display: block; }
+        
+        .gateway-overview {
+            background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+            border: 1px solid #4a5568;
+            border-radius: 12px;
+            padding: 40px;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .gateway-overview h2 {
+            font-size: 2rem;
+            color: #90cdf4;
+            margin-bottom: 10px;
+        }
+        
+        .gateway-overview p {
+            color: #a0aec0;
+            font-size: 1.1rem;
+        }
+        
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        
+        .feature-card {
+            background: #2d3748;
+            border: 1px solid #4a5568;
+            border-radius: 12px;
+            padding: 30px;
+            transition: all 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-2px);
+            border-color: #718096;
+        }
+        
+        .feature-card h3 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+            color: #f7fafc;
+        }
+        
+        .feature-card p {
+            color: #a0aec0;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        
+        .feature-list {
+            list-style: none;
+        }
+        
+        .feature-list li {
+            color: #e2e8f0;
+            margin-bottom: 8px;
+            padding-left: 20px;
+            position: relative;
+        }
+        
+        .feature-list li::before {
+            content: "▶";
+            position: absolute;
+            left: 0;
+            color: #68d391;
+        }
+        
+        .test-area {
+            background: #2d3748;
+            border: 1px solid #4a5568;
+            border-radius: 8px;
+            padding: 25px;
+            margin: 20px 0;
+        }
+        
+        .test-area h4 {
+            color: #f7fafc;
+            margin-bottom: 15px;
+        }
+        
+        .test-area input, .test-area textarea, .test-area select {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            background: #1a202c;
+            border: 1px solid #4a5568;
+            border-radius: 6px;
+            color: #f7fafc;
+            font-size: 14px;
+        }
+        
+        .test-area input:focus, .test-area textarea:focus, .test-area select:focus {
+            outline: none;
+            border-color: #90cdf4;
+        }
+        
+        .test-area button {
+            background: #4a5568;
+            color: #f7fafc;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 8px 8px 0 0;
+            transition: all 0.3s ease;
+        }
+        
+        .test-area button:hover { background: #718096; }
+        .test-area button.primary { background: #2b6cb0; }
+        .test-area button.primary:hover { background: #3182ce; }
+        .test-area button.success { background: #2d5a3d; }
+        .test-area button.success:hover { background: #38a169; }
+        .test-area button.warning { background: #c05621; }
+        .test-area button.warning:hover { background: #dd6b20; }
+        
+        .result {
+            background: #1a202c;
+            border: 1px solid #4a5568;
+            border-radius: 6px;
+            padding: 15px;
+            margin: 15px 0;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 13px;
+            color: #e2e8f0;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .info-box {
+            background: #1e3a5f;
+            border: 1px solid #2b6cb0;
+            border-left: 4px solid #3182ce;
+            border-radius: 6px;
+            padding: 15px;
+            margin: 15px 0;
+            color: #bee3f8;
+        }
+        
+        .warning-box {
+            background: #5a3d2b;
+            border: 1px solid #c05621;
+            border-left: 4px solid #dd6b20;
+            border-radius: 6px;
+            padding: 15px;
+            margin: 15px 0;
+            color: #fed7aa;
+        }
+        
+        .success-box {
+            background: #2d5a3d;
+            border: 1px solid #38a169;
+            border-left: 4px solid #48bb78;
+            border-radius: 6px;
+            padding: 15px;
+            margin: 15px 0;
+            color: #c6f6d5;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: #2d3748;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #4a5568;
+        }
+        
+        th {
+            background: #1a202c;
+            color: #f7fafc;
+            font-weight: 600;
+        }
+        
+        td { color: #e2e8f0; }
+        
+        .endpoint-example {
+            background: #2d3748;
+            border: 1px solid #4a5568;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+        
+        pre {
+            background: #1a202c;
+            border: 1px solid #4a5568;
+            border-radius: 6px;
+            padding: 15px;
+            overflow-x: auto;
+            color: #e2e8f0;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 13px;
+            margin: 10px 0;
+        }
+        
+        a {
+            color: #90cdf4;
+            text-decoration: none;
+        }
+        
+        a:hover {
+            color: #bee3f8;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🐙 KrakenD Gateway</h1>
+        <p class="subtitle">High-Performance API Gateway</p>
+        <p class="tagline">Route • Transform • Aggregate • Monitor</p>
+        
+        <div class="status-badges">
+            <span class="badge running">🟢 Gateway Running</span>
+            <span class="badge management">🔧 Management Ready</span>
+            <span class="badge monitoring">📊 Monitoring Active</span>
+        </div>
+        
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number" id="endpoints-count">-</div>
+                <div class="stat-label">API Endpoints</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="gateway-port">8684</div>
+                <div class="stat-label">Gateway Port</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="status-indicator">●</div>
+                <div class="stat-label">Health Status</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number" id="management-port">5001</div>
+                <div class="stat-label">Management Port</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="showSection('overview')" id="btn-overview">⭐ Gateway Overview</button>
+            <button class="nav-tab" onclick="showSection('endpoints')" id="btn-endpoints">🔗 API Endpoints</button>
+            <button class="nav-tab" onclick="showSection('setup')" id="btn-setup">🚀 Quick Setup</button>
+            <button class="nav-tab" onclick="showSection('testing')" id="btn-testing">🧪 Testing</button>
+            <button class="nav-tab" onclick="showSection('monitoring')" id="btn-monitoring">📊 Monitoring</button>
+        </div>
+
+        <div id="overview" class="section active">
+            <div class="gateway-overview">
+                <h2>KrakenD API Gateway</h2>
+                <p>Single entry point for all your backend services</p>
+            </div>
+
+            <div class="cards-grid">
+                <div class="feature-card">
+                    <h3>🌐 API Routing</h3>
+                    <p>Route incoming requests to the appropriate backend services based on URL paths and HTTP methods.</p>
+                    <ul class="feature-list">
+                        <li>Path-based routing</li>
+                        <li>HTTP method filtering</li>
+                        <li>Backend service mapping</li>
+                        <li>Dynamic endpoint configuration</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <h3>⚡ High Performance</h3>
+                    <p>Built for speed and efficiency with minimal latency overhead.</p>
+                    <ul class="feature-list">
+                        <li>Concurrent request handling</li>
+                        <li>Low memory footprint</li>
+                        <li>Fast response times</li>
+                        <li>Efficient connection pooling</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <h3>🔧 Easy Management</h3>
+                    <p>Web-based interface for configuring and managing your API gateway.</p>
+                    <ul class="feature-list">
+                        <li>Visual endpoint configuration</li>
+                        <li>Real-time validation</li>
+                        <li>Configuration backup</li>
+                        <li>Hot reloading</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <h3>🔒 Security Features</h3>
+                    <p>Built-in security features to protect your APIs and backend services.</p>
+                    <ul class="feature-list">
+                        <li>CORS configuration</li>
+                        <li>Rate limiting</li>
+                        <li>Request validation</li>
+                        <li>Authentication support</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="test-area">
+                <h4>🔍 Gateway Health Check</h4>
+                <button onclick="checkGatewayHealth()" class="success">Check Gateway Status</button>
+                <div id="health-result" class="result"></div>
+            </div>
+        </div>
+
+        <div id="endpoints" class="section">
+            <h2>🔗 API Endpoint Management</h2>
+
+            <div class="test-area">
+                <h4>📋 Current Endpoints</h4>
+                <button onclick="loadEndpoints()" class="primary">Load Endpoints</button>
+                <div id="endpoints-list" class="result"></div>
+            </div>
+
+            <div class="cards-grid">
+                <div class="feature-card">
+                    <h3>➕ Add New Endpoint</h3>
+                    <div class="test-area">
+                        <input type="text" id="endpoint-path" placeholder="Gateway path (e.g., /api/users)" />
+                        <select id="endpoint-method">
+                            <option value="GET">GET</option>
+                            <option value="POST">POST</option>
+                            <option value="PUT">PUT</option>
+                            <option value="DELETE">DELETE</option>
+                        </select>
+                        <input type="text" id="backend-url" placeholder="Backend URL (e.g., http://user-service:3000)" />
+                        <input type="text" id="backend-path" placeholder="Backend path (e.g., /users)" />
+                        <button onclick="createEndpoint()" class="success">Create Endpoint</button>
+                        <div id="endpoint-result" class="result"></div>
+                    </div>
+                </div>
+
+                <div class="feature-card">
+                    <h3>🔧 Configuration</h3>
+                    <div class="test-area">
+                        <button onclick="loadConfiguration()" class="primary">View Config</button>
+                        <button onclick="validateConfiguration()" class="success">Validate Config</button>
+                        <div id="config-result" class="result"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <strong>Endpoint Configuration:</strong> Define how your gateway routes requests to backend services. Each endpoint maps a gateway path to one or more backend services.
+            </div>
+        </div>
+
+        <div id="setup" class="section">
+            <h2>🚀 Quick Setup Guide</h2>
+
+            <div class="cards-grid">
+                <div class="feature-card">
+                    <h3>1️⃣ Start the Gateway</h3>
+                    <pre>docker-compose up -d</pre>
+                    <p>This starts both KrakenD gateway and the management interface.</p>
+                </div>
+
+                <div class="feature-card">
+                    <h3>2️⃣ Access Management</h3>
+                    <p>Open the web interface to configure your gateway:</p>
+                    <ul class="feature-list">
+                        <li><a href="http://localhost:5001" target="_blank">Management UI: localhost:5001</a></li>
+                        <li><a href="http://localhost:8684" target="_blank">Gateway: localhost:8684</a></li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <h3>3️⃣ Configure Endpoints</h3>
+                    <p>Add your first API endpoint using the form above or the web interface.</p>
+                </div>
+
+                <div class="feature-card">
+                    <h3>4️⃣ Test Your Setup</h3>
+                    <div class="test-area">
+                        <button onclick="testGatewaySetup()" class="success">Test Gateway</button>
+                        <div id="setup-result" class="result"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="warning-box">
+                <strong>Note:</strong> Make sure your backend services are running and accessible before configuring endpoints.
+            </div>
+        </div>
+
+        <div id="testing" class="section">
+            <h2>🧪 API Testing</h2>
+
+            <div class="test-area">
+                <h4>🔍 Test API Endpoints</h4>
+                <input type="text" id="test-path" placeholder="Endpoint path (e.g., /api/users)" />
+                <select id="test-method">
+                    <option value="GET">GET</option>
+                    <option value="POST">POST</option>
+                    <option value="PUT">PUT</option>
+                    <option value="DELETE">DELETE</option>
+                </select>
+                <textarea id="test-body" placeholder='Request body (JSON format)' rows="4"></textarea>
+                <button onclick="testEndpoint()" class="primary">Send Request</button>
+                <div id="test-result" class="result"></div>
+            </div>
+
+            <div class="cards-grid">
+                <div class="feature-card">
+                    <h3>📊 Response Analysis</h3>
+                    <p>Test your endpoints and analyze responses to ensure proper routing and data transformation.</p>
+                </div>
+
+                <div class="feature-card">
+                    <h3>🔗 Backend Validation</h3>
+                    <p>Verify that your backend services are properly connected and responding through the gateway.</p>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <strong>Testing Tips:</strong> Use the testing interface to verify your endpoint configurations before deploying to production.
+            </div>
+        </div>
+
+        <div id="monitoring" class="section">
+            <h2>📊 Gateway Monitoring</h2>
+
+            <div class="cards-grid">
+                <div class="feature-card">
+                    <h3>🔍 Gateway Status</h3>
+                    <div class="test-area">
+                        <button onclick="getGatewayStatus()" class="primary">Check Status</button>
+                        <div id="status-result" class="result"></div>
+                    </div>
+                </div>
+
+                <div class="feature-card">
+                    <h3>🔧 Management Operations</h3>
+                    <div class="test-area">
+                        <button onclick="restartGateway()" class="warning">Restart Gateway</button>
+                        <button onclick="reloadConfig()" class="primary">Reload Config</button>
+                        <div id="management-result" class="result"></div>
+                    </div>
+                </div>
+
+                <div class="feature-card">
+                    <h3>📋 Configuration Summary</h3>
+                    <div class="test-area">
+                        <button onclick="getConfigSummary()" class="primary">Get Summary</button>
+                        <div id="summary-result" class="result"></div>
+                    </div>
+                </div>
+
+                <div class="feature-card">
+                    <h3>📈 Performance Metrics</h3>
+                    <div class="test-area">
+                        <button onclick="getPerformanceMetrics()" class="primary">View Metrics</button>
+                        <div id="metrics-result" class="result"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="success-box">
+                <strong>Monitoring Best Practices:</strong> Regularly check gateway health and monitor endpoint performance to ensure optimal operation.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const GATEWAY_URL = 'http://localhost:8684';
+        const MANAGEMENT_URL = 'http://localhost:5001';
+
+        function showSection(sectionId) {
+            document.querySelectorAll('.section').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-tab').forEach(el => el.classList.remove('active'));
+            
+            document.getElementById(sectionId).classList.add('active');
+            document.getElementById(`btn-${sectionId}`).classList.add('active');
+        }
+
+        async function apiCall(url, options = {}) {
+            try {
+                const response = await fetch(url, options);
+                const data = await response.json();
+                return { success: true, data, status: response.status };
+            } catch (error) {
+                return { success: false, error: error.message };
+            }
+        }
+
+        async function updateStats() {
+            try {
+                const configResult = await apiCall(`${MANAGEMENT_URL}/config`);
+                if (configResult.success) {
+                    const endpointsCount = configResult.data.config?.endpoints?.length || 0;
+                    document.getElementById('endpoints-count').textContent = endpointsCount;
+                }
+
+                const healthResult = await apiCall(`${GATEWAY_URL}/health`);
+                const statusEl = document.getElementById('status-indicator');
+                if (healthResult.success) {
+                    statusEl.textContent = '●';
+                    statusEl.style.color = '#68d391';
+                } else {
+                    statusEl.textContent = '●';
+                    statusEl.style.color = '#f56565';
+                }
+            } catch (error) {
+                console.log('Stats update failed:', error);
+            }
+        }
+
+        async function checkGatewayHealth() {
+            const result = await apiCall(`${GATEWAY_URL}/health`);
+            document.getElementById('health-result').textContent = 
+                result.success ? 
+                `✅ Gateway is healthy (${result.status})\n\n${JSON.stringify(result.data, null, 2)}` :
+                `❌ Gateway health check failed: ${result.error}`;
+        }
+
+        async function loadEndpoints() {
+            const result = await apiCall(`${MANAGEMENT_URL}/config`);
+            if (result.success) {
+                const endpoints = result.data.config?.endpoints || [];
+                let output = `Found ${endpoints.length} configured endpoints:\n\n`;
+                
+                endpoints.forEach((ep, index) => {
+                    output += `${index + 1}. ${ep.method} ${ep.endpoint}\n`;
+                    output += `   → ${ep.backend[0]?.host?.[0]}${ep.backend[0]?.url_pattern}\n\n`;
+                });
+                
+                if (endpoints.length === 0) {
+                    output = 'No endpoints configured yet.\nUse the form above to add your first endpoint.';
+                }
+                
+                document.getElementById('endpoints-list').textContent = output;
+            } else {
+                document.getElementById('endpoints-list').textContent = `❌ Failed to load endpoints: ${result.error}`;
+            }
+        }
+
+        async function createEndpoint() {
+            const data = {
+                endpoint: document.getElementById('endpoint-path').value,
+                method: document.getElementById('endpoint-method').value,
+                backend_host: document.getElementById('backend-url').value,
+                backend_path: document.getElementById('backend-path').value
+            };
+            
+            const result = await apiCall(`${MANAGEMENT_URL}/endpoints`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            
+            const output = result.success ? 
+                `✅ Endpoint created successfully!\n\n${JSON.stringify(result.data, null, 2)}` :
+                `❌ Failed to create endpoint: ${result.error}`;
+            
+            document.getElementById('endpoint-result').textContent = output;
+            if (result.success) {
+                updateStats();
+                // Clear form
+                document.getElementById('endpoint-path').value = '';
+                document.getElementById('backend-url').value = '';
+                document.getElementById('backend-path').value = '';
+            }
+        }
+
+        async function loadConfiguration() {
+            const result = await apiCall(`${MANAGEMENT_URL}/config`);
+            document.getElementById('config-result').textContent = 
+                result.success ? 
+                JSON.stringify(result.data.config, null, 2) :
+                `❌ Failed to load configuration: ${result.error}`;
+        }
+
+        async function validateConfiguration() {
+            const result = await apiCall(`${MANAGEMENT_URL}/validate`);
+            document.getElementById('config-result').textContent = 
+                result.success ? 
+                `✅ Configuration is valid\n\n${JSON.stringify(result.data, null, 2)}` :
+                `❌ Validation failed: ${result.error}`;
+        }
+
+        async function testGatewaySetup() {
+            let output = 'Testing gateway setup...\n\n';
+            
+            // Test health
+            const healthResult = await apiCall(`${GATEWAY_URL}/health`);
+            output += `Gateway Health: ${healthResult.success ? '✅ PASS' : '❌ FAIL'}\n`;
+            
+            // Test management
+            const mgmtResult = await apiCall(`${MANAGEMENT_URL}/config`);
+            output += `Management API: ${mgmtResult.success ? '✅ PASS' : '❌ FAIL'}\n`;
+            
+            // Test validation
+            const validResult = await apiCall(`${MANAGEMENT_URL}/validate`);
+            output += `Configuration: ${validResult.success ? '✅ VALID' : '❌ INVALID'}\n`;
+            
+            document.getElementById('setup-result').textContent = output;
+        }
+
+        async function testEndpoint() {
+            const path = document.getElementById('test-path').value;
+            const method = document.getElementById('test-method').value;
+            const body = document.getElementById('test-body').value;
+            
+            const options = { method };
+            if (body && (method === 'POST' || method === 'PUT')) {
+                options.headers = { 'Content-Type': 'application/json' };
+                options.body = body;
+            }
+            
+            const result = await apiCall(`${GATEWAY_URL}${path}`, options);
+            document.getElementById('test-result').textContent = 
+                result.success ? 
+                `✅ Request successful (${result.status})\n\n${JSON.stringify(result.data, null, 2)}` :
+                `❌ Request failed: ${result.error}`;
+        }
+
+        async function getGatewayStatus() {
+            const checks = [
+                { name: 'Gateway Health', url: `${GATEWAY_URL}/health` },
+                { name: 'Management API', url: `${MANAGEMENT_URL}/config` }
+            ];
+            
+            let output = 'Gateway Status Check:\n\n';
+            for (let check of checks) {
+                const result = await apiCall(check.url);
+                output += `${check.name}: ${result.success ? '✅ ONLINE' : '❌ OFFLINE'}\n`;
+                if (!result.success) {
+                    output += `  Error: ${result.error}\n`;
+                }
+                output += '\n';
+            }
+            
+            document.getElementById('status-result').textContent = output;
+        }
+
+        async function restartGateway() {
+            const result = await apiCall(`${MANAGEMENT_URL}/restart`, { method: 'POST' });
+            document.getElementById('management-result').textContent = 
+                result.success ? 
+                `✅ Gateway restarted successfully` :
+                `❌ Restart failed: ${result.error}`;
+        }
+
+        async function reloadConfig() {
+            const result = await apiCall(`${MANAGEMENT_URL}/config`);
+            document.getElementById('management-result').textContent = 
+                result.success ? 
+                `✅ Configuration reloaded successfully` :
+                `❌ Reload failed: ${result.error}`;
+        }
+
+        async function getConfigSummary() {
+            const result = await apiCall(`${MANAGEMENT_URL}/config`);
+            if (result.success) {
+                const config = result.data.config;
+                const summary = {
+                    version: config.version,
+                    port: config.port,
+                    endpoints_count: config.endpoints?.length || 0,
+                    cors_enabled: !!config.extra_config?.["security/cors"],
+                    timeout: config.timeout || "Not set"
+                };
+                document.getElementById('summary-result').textContent = JSON.stringify(summary, null, 2);
+            } else {
+                document.getElementById('summary-result').textContent = `❌ Failed to get summary: ${result.error}`;
+            }
+        }
+
+        async function getPerformanceMetrics() {
+            const startTime = Date.now();
+            const result = await apiCall(`${GATEWAY_URL}/health`);
+            const responseTime = Date.now() - startTime;
+            
+            const metrics = {
+                gateway_response_time_ms: responseTime,
+                gateway_status: result.success ? 'healthy' : 'unhealthy',
+                timestamp: new Date().toISOString()
+            };
+            
+            document.getElementById('metrics-result').textContent = JSON.stringify(metrics, null, 2);
+        }
+
+        // Initialize page
+        window.onload = () => {
+            updateStats();
+            setInterval(updateStats, 30000); // Update every 30 seconds
+        };
+    </script>
+</body>
+</html>
