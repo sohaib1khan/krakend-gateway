@@ -2,7 +2,7 @@
 
 <div align="center">
 
-[![KrakenD Interactive Documentation](https://img.shields.io/badge/🐙_INTERACTIVE-DOCUMENTATION-4a5568?style=for-the-badge&labelColor=0c0c0c&color=2d3748&logoColor=white)](https://sohaib1khan.github.io/krakend-gateway/)
+[![KrakenD Interactive Documentation](https://img.shields.io/badge/🐙_INTERACTIVE-DOCUMENTATION-4a5568?style=for-the-badge&labelColor=0c0c0c&color=2d3748&logoColor=white)](./doc/index.html)
 
 **🌐 High-Performance Gateway | 🔧 Web Management | 📊 Real-time Monitoring | ⚡ One-Command Setup**
 
@@ -37,7 +37,7 @@ A containerized KrakenD setup with web-based configuration management for API ro
 
 ### Clone the Repository
 ```bash
-git clone https://github.com/sohaib1khan/krakend-gateway
+git clone https://github.com/yourusername/krakend-gateway.git
 cd krakend-gateway
 ```
 
@@ -51,6 +51,28 @@ docker-compose up -d
 - **🌐 Web Management**: http://localhost:5001
 - **⚙️ API Gateway**: http://localhost:8684  
 - **📚 Documentation**: http://localhost:5001/doc/
+
+### 🔐 Default Credentials
+
+The web interface requires authentication. Use these default credentials:
+
+| Username | Password | Role |
+|----------|----------|------|
+| **admin** | krakend123 | Administrator |
+| **user** | password123 | Standard User |
+| **demo** | demo123 | Demo User |
+
+> **📝 Note**: Update credentials in `management/app.py` before production use.
+
+---
+
+## 📸 Interface Preview
+
+### Login Interface
+![Login Interface](img/login.png)
+
+### Management Dashboard
+![KrakenD Manager](img/krakend_manager.png)
 
 ---
 
@@ -164,6 +186,9 @@ docker-compose down
 - **CORS support** - Cross-origin request handling
 - **Rate limiting** - Request throttling capabilities
 
+> **🔐 Credential Management**: Default users are stored in `management/app.py`. 
+> For production deployment, consider using environment variables or a secure database.
+
 ---
 
 ## 🚀 API Endpoint Management
@@ -250,6 +275,11 @@ curl -v http://localhost:8684/api/your-endpoint
 - Check JSON syntax in configuration
 - Restart management service
 - Review logs for validation errors
+
+**Cannot login to web interface:**
+- Verify credentials in `management/app.py`
+- Check management service is running: `docker-compose logs management`
+- Ensure port 5001 is accessible
 
 ---
 

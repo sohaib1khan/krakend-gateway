@@ -332,6 +332,19 @@
             color: #bee3f8;
             text-decoration: underline;
         }
+        
+        .feature-card img {
+            width: 100%;
+            border-radius: 8px;
+            margin-top: 10px;
+            border: 1px solid #4a5568;
+            transition: all 0.3s ease;
+        }
+        
+        .feature-card img:hover {
+            border-color: #718096;
+            transform: scale(1.02);
+        }
     </style>
 </head>
 <body>
@@ -432,6 +445,15 @@
                 <button onclick="checkGatewayHealth()" class="success">Check Gateway Status</button>
                 <div id="health-result" class="result"></div>
             </div>
+
+            <div class="info-box">
+                <strong>🔐 Quick Access Credentials:</strong><br>
+                Use these default credentials to access the management interface at <a href="http://localhost:5001" target="_blank">localhost:5001</a><br><br>
+                <strong>admin</strong> / krakend123 (Full access)<br>
+                <strong>user</strong> / password123 (Standard access)<br>
+                <strong>demo</strong> / demo123 (Demo access)<br><br>
+                <small>⚠️ Remember to update these in <code>management/app.py</code> for production use</small>
+            </div>
         </div>
 
         <div id="endpoints" class="section">
@@ -493,6 +515,14 @@
                         <li><a href="http://localhost:5001" target="_blank">Management UI: localhost:5001</a></li>
                         <li><a href="http://localhost:8684" target="_blank">Gateway: localhost:8684</a></li>
                     </ul>
+                    
+                    <div class="info-box" style="margin-top: 20px;">
+                        <strong>🔐 Default Login Credentials:</strong><br>
+                        <strong>admin</strong> / krakend123 (Administrator)<br>
+                        <strong>user</strong> / password123 (Standard User)<br>
+                        <strong>demo</strong> / demo123 (Demo User)<br>
+                        <small>Update in <code>management/app.py</code> before production</small>
+                    </div>
                 </div>
 
                 <div class="feature-card">
@@ -511,6 +541,18 @@
 
             <div class="warning-box">
                 <strong>Note:</strong> Make sure your backend services are running and accessible before configuring endpoints.
+            </div>
+
+            <div class="cards-grid">
+                <div class="feature-card">
+                    <h3>📸 Login Interface</h3>
+                    <img src="../img/login.png" alt="Login Interface" style="width: 100%; border-radius: 8px; margin-top: 10px;">
+                </div>
+
+                <div class="feature-card">
+                    <h3>📸 Management Dashboard</h3>
+                    <img src="../img/krakend_manager.png" alt="KrakenD Manager Dashboard" style="width: 100%; border-radius: 8px; margin-top: 10px;">
+                </div>
             </div>
         </div>
 
