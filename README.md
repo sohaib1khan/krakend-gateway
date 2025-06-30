@@ -2,7 +2,7 @@
 
 <div align="center">
 
-[![KrakenD Interactive Documentation](https://img.shields.io/badge/🐙_INTERACTIVE-DOCUMENTATION-4a5568?style=for-the-badge&labelColor=0c0c0c&color=2d3748&logoColor=white)](./doc/index.html)
+[![KrakenD Interactive Documentation](https://img.shields.io/badge/🐙_INTERACTIVE-DOCUMENTATION-4a5568?style=for-the-badge&labelColor=0c0c0c&color=2d3748&logoColor=white)](https://sohaib1khan.github.io/krakend-gateway/)
 
 **🌐 High-Performance Gateway | 🔧 Web Management | 📊 Real-time Monitoring | ⚡ One-Command Setup**
 
