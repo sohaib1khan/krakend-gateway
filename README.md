@@ -43,7 +43,7 @@ cd krakend-gateway
 
 ### 🏗️ Start the Gateway
 ```bash
-docker-compose up -d
+docker compose build && docker-compose up -d
 ```
 
 ### 📱 Access the Interfaces
