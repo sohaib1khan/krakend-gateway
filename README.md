@@ -72,7 +72,7 @@ The web interface requires authentication. Use these default credentials:
 ![Login Interface](img/login.png)
 
 ### Management Dashboard
-![KrakenD Manager](img/krakend_manager.png)
+![KrakenD Manager](img/krakend_manager.gif)
 
 ---
 
