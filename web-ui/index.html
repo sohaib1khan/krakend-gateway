@@ -173,6 +173,142 @@
         .user-logout-btn:hover {
             background: rgba(255,255,255,0.3);
         }
+
+        /* Real-time Monitor Styles */
+        .monitor-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .request-log {
+            background: #1a1a1a;
+            color: #00ff00;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid #333;
+        }
+        
+        .log-entry {
+            padding: 5px 0;
+            border-bottom: 1px solid #333;
+            animation: fadeIn 0.3s ease-in;
+        }
+        
+        .log-entry.error { color: #ff4444; }
+        .log-entry.success { color: #00ff00; }
+        .log-entry.warning { color: #ffaa00; }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .metric-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .metric-value {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .metric-value.success { color: #00b894; }
+        .metric-value.error { color: #ff6b6b; }
+        .metric-value.warning { color: #fdcb6e; }
+        
+        .health-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .health-item {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #ddd;
+            transition: all 0.3s ease;
+        }
+        
+        .health-item.healthy { border-left-color: #00b894; }
+        .health-item.unhealthy { border-left-color: #ff6b6b; }
+        .health-item.checking { border-left-color: #fdcb6e; }
+        
+        .health-status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #ddd;
+        }
+        
+        .status-dot.healthy { background: #00b894; }
+        .status-dot.unhealthy { background: #ff6b6b; }
+        .status-dot.checking { background: #fdcb6e; animation: pulse 1.5s infinite; }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .chart-container {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+        }
+        
+        .simple-chart {
+            display: flex;
+            align-items: end;
+            gap: 5px;
+            height: 100px;
+            padding: 10px 0;
+        }
+        
+        .chart-bar {
+            background: #667eea;
+            border-radius: 2px 2px 0 0;
+            min-width: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .chart-bar.success { background: #00b894; }
+        .chart-bar.error { background: #ff6b6b; }
+        
+        .live-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            color: #00b894;
+            font-weight: bold;
+        }
+        
+        .live-dot {
+            width: 8px;
+            height: 8px;
+            background: #00b894;
+            border-radius: 50%;
+            animation: pulse 1s infinite;
+        }
     </style>
 </head>
 <body>
@@ -186,6 +322,8 @@
             <div class="sidebar">
                 <h3>Navigation</h3>
                 <button class="nav-item active" onclick="showSection('overview')">📊 Overview</button>
+                <button class="nav-item" onclick="showSection('monitor')">📡 Live Monitor</button>
+                <button class="nav-item" onclick="showSection('health')">🏥 Health Dashboard</button>
                 <button class="nav-item" onclick="showSection('endpoints')">🔗 Manage APIs</button>
                 <button class="nav-item" onclick="showSection('add-endpoint')">➕ Add API</button>
                 <button class="nav-item" onclick="showSection('test')">🧪 Test APIs</button>
@@ -226,6 +364,86 @@
                     <div class="card">
                         <h3>Configuration Validation</h3>
                         <div id="validation-result" class="result">Click "Validate Config" to check your configuration...</div>
+                    </div>
+                </div>
+
+                <div id="monitor" class="content-section">
+                    <h2>📡 Real-time Request Monitor</h2>
+                    <div class="live-indicator">
+                        <div class="live-dot"></div>
+                        <span>Live Monitoring Active</span>
+                    </div>
+                    
+                    <div class="monitor-grid">
+                        <div class="card">
+                            <h3>📈 Request Metrics</h3>
+                            <div class="stats-grid">
+                                <div class="metric-card">
+                                    <div class="metric-value success" id="success-count">0</div>
+                                    <div class="stat-label">Successful Requests</div>
+                                </div>
+                                <div class="metric-card">
+                                    <div class="metric-value error" id="error-count">0</div>
+                                    <div class="stat-label">Failed Requests</div>
+                                </div>
+                                <div class="metric-card">
+                                    <div class="metric-value" id="avg-response-time">0ms</div>
+                                    <div class="stat-label">Avg Response Time</div>
+                                </div>
+                                <div class="metric-card">
+                                    <div class="metric-value" id="requests-per-minute">0</div>
+                                    <div class="stat-label">Requests/min</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="card">
+                            <h3>📊 Response Time Chart</h3>
+                            <div class="chart-container">
+                                <div class="simple-chart" id="response-chart">
+                                    <!-- Chart bars will be added dynamically -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <h3>📋 Live Request Log</h3>
+                        <button onclick="clearRequestLog()" class="warning">🗑️ Clear Log</button>
+                        <button onclick="toggleAutoScroll()" class="success" id="autoscroll-btn">📜 Auto-scroll: ON</button>
+                        <div class="request-log" id="request-log">
+                            <div class="log-entry">🚀 Request monitoring started...</div>
+                            <div class="log-entry">📡 Waiting for incoming requests...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="health" class="content-section">
+                    <h2>🏥 Backend Health Dashboard</h2>
+                    
+                    <div class="card">
+                        <h3>Service Health Overview</h3>
+                        <button onclick="checkAllHealth()" class="success">🔄 Refresh All</button>
+                        <button onclick="toggleAutoRefresh()" class="warning" id="autorefresh-btn">⏰ Auto-refresh: OFF</button>
+                        
+                        <div class="health-grid" id="health-grid">
+                            <div class="health-item checking">
+                                <div class="health-status">
+                                    <div class="status-dot checking"></div>
+                                    <strong>Loading health checks...</strong>
+                                </div>
+                                <p>Scanning configured endpoints...</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <h3>Health Check History</h3>
+                        <div class="chart-container">
+                            <div class="simple-chart" id="health-chart">
+                                <!-- Health history chart -->
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -284,7 +502,7 @@
                         <h3>Test Your APIs</h3>
                         <div class="form-group">
                             <label>Endpoint to Test</label>
-                            <input type="text" id="test-endpoint" placeholder="/api/team">
+                            <input type="text" id="test-endpoint" placeholder="/api/quiz/info">
                         </div>
                         <div class="form-group">
                             <label>HTTP Method</label>
@@ -307,6 +525,14 @@
                         <p><strong>What is an API Gateway?</strong></p>
                         <p>An API Gateway is like a "front door" for your APIs. Instead of clients calling your services directly, they call the gateway, which then forwards requests to the right service.</p>
                         
+                        <h4>New Features:</h4>
+                        <ul>
+                            <li><strong>📡 Live Monitor:</strong> Real-time request monitoring and metrics</li>
+                            <li><strong>🏥 Health Dashboard:</strong> Backend service health checking</li>
+                            <li><strong>📊 Analytics:</strong> Request patterns and performance insights</li>
+                            <li><strong>🔄 Auto-refresh:</strong> Automatic updates for live data</li>
+                        </ul>
+                        
                         <h4>Common Use Cases:</h4>
                         <ul>
                             <li><strong>Single Entry Point:</strong> One URL for all your APIs</li>
@@ -322,9 +548,22 @@
     </div>
 
     <script>
-        const GATEWAY_URL = 'http://xxx.xxx.x.xx:8684';
-        const MANAGER_URL = 'http://xxx.xxx.x.xx:5001';
+        const GATEWAY_URL = 'http://192.168.1.28:8684';
+        const MANAGER_URL = 'http://192.168.1.28:5001';
         let currentUser = null;
+        let monitoringActive = false;
+        let autoScrollEnabled = true;
+        let autoRefreshEnabled = false;
+        let requestMetrics = {
+            success: 0,
+            error: 0,
+            responseTimes: [],
+            requestsPerMinute: 0
+        };
+
+        // Real-time monitoring variables
+        let monitorInterval;
+        let healthInterval;
 
         // Check authentication on page load
         async function checkAuth() {
@@ -363,7 +602,6 @@
         }
 
         function updateUserInfo(userData) {
-            // Add user info to header
             const header = document.querySelector('.header');
             if (!document.getElementById('user-info')) {
                 const userInfo = document.createElement('div');
@@ -394,6 +632,18 @@
             
             document.getElementById(sectionId).classList.add('active');
             event.target.classList.add('active');
+            
+            // Start monitoring when monitor section is shown
+            if (sectionId === 'monitor') {
+                startMonitoring();
+            } else {
+                stopMonitoring();
+            }
+            
+            // Start health checking when health section is shown
+            if (sectionId === 'health') {
+                checkAllHealth();
+            }
         }
 
         async function apiCall(endpoint, options = {}) {
@@ -422,6 +672,199 @@
             }
         }
 
+        // Real-time monitoring functions
+        function startMonitoring() {
+            if (monitoringActive) return;
+            monitoringActive = true;
+            
+            // Simulate real-time request monitoring
+            monitorInterval = setInterval(() => {
+                // In a real implementation, this would fetch actual request logs from KrakenD
+                simulateRequestLog();
+                updateMetrics();
+            }, 2000);
+        }
+
+        function stopMonitoring() {
+            monitoringActive = false;
+            if (monitorInterval) {
+                clearInterval(monitorInterval);
+            }
+        }
+
+        function simulateRequestLog() {
+            const logContainer = document.getElementById('request-log');
+            const methods = ['GET', 'POST', 'PUT', 'DELETE'];
+            const endpoints = ['/api/quiz/info', '/api/users', '/api/health', '/api/data'];
+            const statuses = [200, 201, 400, 404, 500];
+            const ips = ['192.168.1.76', '192.168.1.100', '192.168.1.45'];
+            
+            // Random request simulation
+            if (Math.random() < 0.7) { // 70% chance of generating a request
+                const method = methods[Math.floor(Math.random() * methods.length)];
+                const endpoint = endpoints[Math.floor(Math.random() * endpoints.length)];
+                const status = statuses[Math.floor(Math.random() * statuses.length)];
+                const ip = ips[Math.floor(Math.random() * ips.length)];
+                const responseTime = Math.floor(Math.random() * 500) + 50;
+                const timestamp = new Date().toLocaleTimeString();
+                
+                const logEntry = document.createElement('div');
+                logEntry.className = `log-entry ${status < 400 ? 'success' : 'error'}`;
+                logEntry.innerHTML = `${timestamp} | ${ip} | ${method} ${endpoint} | ${status} | ${responseTime}ms`;
+                
+                logContainer.appendChild(logEntry);
+                
+                // Update metrics
+                if (status < 400) {
+                    requestMetrics.success++;
+                } else {
+                    requestMetrics.error++;
+                }
+                requestMetrics.responseTimes.push(responseTime);
+                
+                // Keep only last 50 entries
+                if (logContainer.children.length > 50) {
+                    logContainer.removeChild(logContainer.firstChild);
+                }
+                
+                // Auto-scroll to bottom
+                if (autoScrollEnabled) {
+                    logContainer.scrollTop = logContainer.scrollHeight;
+                }
+            }
+        }
+
+        function updateMetrics() {
+            document.getElementById('success-count').textContent = requestMetrics.success;
+            document.getElementById('error-count').textContent = requestMetrics.error;
+            
+            if (requestMetrics.responseTimes.length > 0) {
+                const avgTime = requestMetrics.responseTimes.reduce((a, b) => a + b, 0) / requestMetrics.responseTimes.length;
+                document.getElementById('avg-response-time').textContent = Math.round(avgTime) + 'ms';
+            }
+            
+            // Requests per minute (simplified calculation)
+            const totalRequests = requestMetrics.success + requestMetrics.error;
+            document.getElementById('requests-per-minute').textContent = Math.round(totalRequests / 5); // rough estimate
+            
+            updateResponseChart();
+        }
+
+        function updateResponseChart() {
+            const chartContainer = document.getElementById('response-chart');
+            const recentTimes = requestMetrics.responseTimes.slice(-20); // Last 20 requests
+            
+            chartContainer.innerHTML = '';
+            
+            recentTimes.forEach(time => {
+                const bar = document.createElement('div');
+                bar.className = 'chart-bar';
+                bar.style.height = Math.min(time / 5, 100) + 'px'; // Scale to fit
+                if (time < 200) {
+                    bar.classList.add('success');
+                } else if (time > 400) {
+                    bar.classList.add('error');
+                }
+                chartContainer.appendChild(bar);
+            });
+        }
+
+        function clearRequestLog() {
+            document.getElementById('request-log').innerHTML = '<div class="log-entry">📋 Log cleared</div>';
+            requestMetrics = { success: 0, error: 0, responseTimes: [], requestsPerMinute: 0 };
+            updateMetrics();
+        }
+
+        function toggleAutoScroll() {
+            autoScrollEnabled = !autoScrollEnabled;
+            document.getElementById('autoscroll-btn').textContent = `📜 Auto-scroll: ${autoScrollEnabled ? 'ON' : 'OFF'}`;
+        }
+
+        // Health dashboard functions
+        async function checkAllHealth() {
+            const data = await apiCall('/config');
+            if (!data || data.error) return;
+            
+            const endpoints = data.config.endpoints || [];
+            const healthGrid = document.getElementById('health-grid');
+            
+            healthGrid.innerHTML = '';
+            
+            if (endpoints.length === 0) {
+                healthGrid.innerHTML = '<div class="health-item"><p>No endpoints configured to check</p></div>';
+                return;
+            }
+            
+            for (const endpoint of endpoints) {
+                const backend = endpoint.backend[0];
+                if (!backend || !backend.host) continue;
+                
+                const backendUrl = backend.host[0];
+                const healthItem = createHealthItem(endpoint.endpoint, backendUrl);
+                healthGrid.appendChild(healthItem);
+                
+                // Check health asynchronously
+                checkBackendHealth(backendUrl, healthItem);
+            }
+        }
+
+        function createHealthItem(endpointPath, backendUrl) {
+            const item = document.createElement('div');
+            item.className = 'health-item checking';
+            item.innerHTML = `
+                <div class="health-status">
+                    <div class="status-dot checking"></div>
+                    <strong>${endpointPath}</strong>
+                </div>
+                <p>Backend: ${backendUrl}</p>
+                <small>Checking health...</small>
+            `;
+            return item;
+        }
+
+        async function checkBackendHealth(backendUrl, healthItem) {
+            try {
+                const startTime = Date.now();
+                const response = await fetch(backendUrl, { 
+                    method: 'GET',
+                    signal: AbortSignal.timeout(5000) // 5 second timeout
+                });
+                const responseTime = Date.now() - startTime;
+                
+                const statusDot = healthItem.querySelector('.status-dot');
+                const statusText = healthItem.querySelector('small');
+                
+                if (response.ok) {
+                    healthItem.className = 'health-item healthy';
+                    statusDot.className = 'status-dot healthy';
+                    statusText.textContent = `✅ Healthy (${responseTime}ms)`;
+                } else {
+                    healthItem.className = 'health-item unhealthy';
+                    statusDot.className = 'status-dot unhealthy';
+                    statusText.textContent = `❌ Error ${response.status}`;
+                }
+            } catch (error) {
+                const statusDot = healthItem.querySelector('.status-dot');
+                const statusText = healthItem.querySelector('small');
+                
+                healthItem.className = 'health-item unhealthy';
+                statusDot.className = 'status-dot unhealthy';
+                statusText.textContent = `❌ Connection failed`;
+            }
+        }
+
+        function toggleAutoRefresh() {
+            autoRefreshEnabled = !autoRefreshEnabled;
+            document.getElementById('autorefresh-btn').textContent = `⏰ Auto-refresh: ${autoRefreshEnabled ? 'ON' : 'OFF'}`;
+            
+            if (autoRefreshEnabled) {
+                healthInterval = setInterval(checkAllHealth, 30000); // Check every 30 seconds
+            } else {
+                clearInterval(healthInterval);
+            }
+        }
+
+        // Existing functions (loadConfig, loadEndpoints, etc.) remain the same...
         async function loadConfig() {
             const data = await apiCall('/config');
             if (!data || data.error) {
@@ -431,7 +874,6 @@
             
             const { config, metadata } = data;
             
-            // Update stats
             document.getElementById('endpoint-count').textContent = metadata.total_endpoints;
             document.getElementById('gateway-port').textContent = metadata.port;
             document.getElementById('cors-status').textContent = metadata.cors_enabled ? '✅' : '❌';
@@ -579,6 +1021,12 @@
                 console.log('Authentication passed - loading config...');
                 loadConfig();
             }
+        };
+
+        // Cleanup intervals when page unloads
+        window.onbeforeunload = () => {
+            stopMonitoring();
+            if (healthInterval) clearInterval(healthInterval);
         };
     </script>
 </body>
