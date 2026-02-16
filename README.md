@@ -4,9 +4,9 @@
 
 [![KrakenD Interactive Documentation](https://img.shields.io/badge/🐙_INTERACTIVE-DOCUMENTATION-4a5568?style=for-the-badge&labelColor=0c0c0c&color=2d3748&logoColor=white)](https://sohaib1khan.github.io/krakend-gateway/)
 
-**🌐 High-Performance Gateway | 🔧 Web Management | 📊 Real-time Monitoring | ⚡ One-Command Setup**
+**High-Performance Gateway |  Web Management |  Real-time Monitoring |  One-Command Setup**
 
-*🚀 Production ready • Configuration management • Always evolving*
+*Production ready • Configuration management • Always evolving*
 
 ---
 </div>
@@ -17,7 +17,7 @@ A containerized KrakenD setup with web-based configuration management for API ro
 
 ---
 
-## 🚀 Overview
+## Overview
 
 **KrakenD Gateway** - Fast API Gateway that acts as a single entry point for your backend services, providing routing, aggregation, and transformation capabilities.
 
@@ -29,7 +29,7 @@ A containerized KrakenD setup with web-based configuration management for API ro
 
 ---
 
-## ⚡ Quick Start
+## Quick Start
 
 ### Prerequisites
 - [Docker](https://docs.docker.com/get-docker/)
@@ -41,18 +41,18 @@ git clone https://github.com/sohaib1khan/krakend-gateway
 cd krakend-gateway
 ```
 
-### 🏗️ Start the Gateway
+### Start the Gateway
 ```bash
 docker compose build && docker compose up -d
 ```
 
-### 📱 Access the Interfaces
+###  Access the Interfaces
 
 - **🌐 Web Management**: http://localhost:5001
 - **⚙️ API Gateway**: http://localhost:8684  
 - **📚 Documentation**: http://localhost:5001/doc/
 
-### 🔐 Default Credentials
+### Default Credentials
 
 The web interface requires authentication. Use these default credentials:
 
@@ -62,11 +62,11 @@ The web interface requires authentication. Use these default credentials:
 | **user** | password123 | Standard User |
 | **demo** | demo123 | Demo User |
 
-> **📝 Note**: Update credentials in `management/app.py` before production use.
+> **Note**: Update credentials in `management/app.py` before production use.
 
 ---
 
-## 📸 Interface Preview
+## Interface Preview
 
 ### Login Interface
 ![Login Interface](img/login.png)
@@ -76,9 +76,9 @@ The web interface requires authentication. Use these default credentials:
 
 ---
 
-## 🛠️ Gateway Components
+## Gateway Components
 
-### 🔧 KrakenD Gateway
+###  KrakenD Gateway
 
 | Component | Port | Purpose |
 |-----------|------|---------|
@@ -86,7 +86,7 @@ The web interface requires authentication. Use these default credentials:
 | **Management API** | 5001 | Configuration and control endpoints |
 | **Web Interface** | 5001 | Browser-based configuration management |
 
-### 📂 Directory Structure
+### Directory Structure
 
 | Directory | Purpose |
 |-----------|---------|
@@ -95,7 +95,7 @@ The web interface requires authentication. Use these default credentials:
 | `web-ui/` | Web interface files |
 | `logs/` | Gateway and application logs |
 
-### 🌐 Network Configuration
+### Network Configuration
 
 Services communicate on `krakend-network` bridge network:
 
@@ -106,9 +106,9 @@ Services communicate on `krakend-network` bridge network:
 
 ---
 
-## 🎯 Getting Started
+## Getting Started
 
-### 🔧 Basic Gateway Configuration
+### Basic Gateway Configuration
 
 1. **Access Web Interface**
    ```bash
@@ -127,7 +127,7 @@ Services communicate on `krakend-network` bridge network:
    curl http://localhost:8684/api/users
    ```
 
-### 🧪 Validate Configuration
+### Validate Configuration
 
 ```bash
 # Check configuration validity
@@ -139,9 +139,9 @@ curl http://localhost:5001/config
 
 ---
 
-## 📋 Gateway Management
+## Gateway Management
 
-### 🔧 Configuration Management
+### Configuration Management
 
 ```bash
 # Get current configuration
@@ -161,7 +161,7 @@ curl -X POST http://localhost:5001/endpoints \
 curl -X POST http://localhost:5001/restart
 ```
 
-### 🛑 Stop the Gateway
+### Stop the Gateway
 
 ```bash
 docker-compose down
@@ -169,7 +169,7 @@ docker-compose down
 
 ---
 
-## 🔧 API Gateway Features
+## API Gateway Features
 
 ### 🌐 Request Routing
 - **Path-based routing** - Route requests based on URL paths
@@ -191,9 +191,9 @@ docker-compose down
 
 ---
 
-## 🚀 API Endpoint Management
+## API Endpoint Management
 
-### 🔧 Adding Endpoints
+### Adding Endpoints
 
 Use the web interface or management API:
 
@@ -208,7 +208,7 @@ Use the web interface or management API:
 }
 ```
 
-### 🧪 Testing Endpoints
+### Testing Endpoints
 
 ```bash
 # Test through gateway
@@ -225,7 +225,7 @@ curl -X POST http://localhost:8684/api/orders \
 
 ---
 
-## 🔧 Troubleshooting
+## Troubleshooting
 
 ### Gateway Not Starting
 ```bash
@@ -259,7 +259,7 @@ curl -v http://localhost:8684/api/your-endpoint
 
 ---
 
-## 🆘 Common Solutions
+## Common Solutions
 
 **Gateway returns 404:**
 - Check endpoint configuration in web UI
@@ -283,7 +283,7 @@ curl -v http://localhost:8684/api/your-endpoint
 
 ---
 
-## 📚 Documentation
+## Documentation
 
 **Interactive Documentation**: [doc/index.html](doc/index.html)
 
@@ -293,7 +293,7 @@ curl -v http://localhost:8684/api/your-endpoint
 
 ---
 
-## 📝 Configuration Files
+## Configuration Files
 
 - `docker-compose.yml` - Container orchestration
 - `config/krakend.json` - Gateway routing configuration  
