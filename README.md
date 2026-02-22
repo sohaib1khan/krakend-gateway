@@ -22,10 +22,10 @@ A containerized KrakenD setup with web-based configuration management for API ro
 **KrakenD Gateway** - Fast API Gateway that acts as a single entry point for your backend services, providing routing, aggregation, and transformation capabilities.
 
 **Components included:**
-- 🌐 **KrakenD Gateway** - Core API routing engine
-- 🔧 **Management API** - REST API for configuration management  
-- 📱 **Web Interface** - Browser-based configuration tool
-- 🔒 **Authentication System** - Login and session management
+- **KrakenD Gateway** - Core API routing engine
+- **Management API** - REST API for configuration management  
+- **Web Interface** - Browser-based configuration tool
+- **Authentication System** - Login and session management
 
 ---
 
@@ -48,9 +48,9 @@ docker compose build && docker compose up -d
 
 ###  Access the Interfaces
 
-- **🌐 Web Management**: http://localhost:5001
-- **⚙️ API Gateway**: http://localhost:8684  
-- **📚 Documentation**: http://localhost:5001/doc/
+- **Web Management**: http://localhost:5001
+- **API Gateway**: http://localhost:8684  
+- **Documentation**: http://localhost:5001/doc/
 
 ### Default Credentials
 
